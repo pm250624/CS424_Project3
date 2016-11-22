@@ -1,0 +1,196 @@
+<!doctype html>
+<html>
+<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+<meta content="utf-8" http-equiv="encoding">
+<style>
+    label {
+        margin-left: 1em;
+        margin-right: 1em;
+    }
+
+    body {
+        padding-top: 20px;
+        padding-bottom: 20px;
+    }
+
+    .navbar {
+        margin-bottom: 20px;
+    }
+</style>
+<head>
+    <title>River Visualization</title>
+    <!-- CSS Libs-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+
+    <!-- JS Libs-->
+    <script src="http://d3js.org/d3.v4.min.js" charset="utf-8"></script>
+    <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" charset="utf-8"></script>
+
+    <!-- CSS Src -->
+    <link rel="stylesheet" href="./src/css/main.css" />
+
+    <!-- JS Src -->
+    <!-- Main Script -->
+    <script src="./src/js/main.js" charset="utf-8"></script>
+
+    <!-- JSON data in JS Files -->
+    <script src="./src/js/R0.js" charset="utf-8"></script>
+    <script src="./src/js/R1.js" charset="utf-8"></script>
+    <script src="./src/js/R2.js" charset="utf-8"></script>
+    <script src="./src/js/R3.js" charset="utf-8"></script>
+    <script src="./src/js/R4.js" charset="utf-8"></script>
+    <script src="./src/js/R5.js" charset="utf-8"></script>
+    <script src="./src/js/R6.js" charset="utf-8"></script>
+    <script src="./src/js/R10.js" charset="utf-8"></script>
+    <script src="./src/js/R11.js" charset="utf-8"></script>
+    <script src="./src/js/R12.js" charset="utf-8"></script>
+    <script src="./src/js/R13.js" charset="utf-8"></script>
+    <script src="./src/js/R14.js" charset="utf-8"></script>
+    <script src="./src/js/R16.js" charset="utf-8"></script>
+    <script src="./src/js/R18.js" charset="utf-8"></script>
+
+    <!-- Individual Visualization Scripts -->
+</head>
+<body>
+    <div class="container">
+        <!-- Static navbar -->
+        <nav class="navbar navbar-default" role="navigation">
+            <div class="container-fluid">
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+                        <li><a href="#" style="font-size:400%" onclick="return incrementRiverContext(false)">&lArr;</a></li>
+                        <li><a id="riverTitle" href="#" style="padding-left:4cm;font-size:200%" data-river="R0">River</a></li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a href="#" style="font-size:400%" onclick="return incrementRiverContext(true)">&rArr;</a></li>
+                    </ul>
+                </div><!--/.nav-collapse -->
+            </div><!--/.container-fluid -->
+        </nav>
+        <div class="row">
+            <div class="col-sm-2"></div>
+            <div class="col-sm-4">
+                <h1>Graph Visibility</h1>
+                <table>
+                    <tr>
+                        <td>
+                            <label>Linear:</label>
+                        </td>
+                        <td>
+                            <input id="linearCheckbox" type="checkbox" />
+                        </td>
+                        <td>
+                            <label>Cardinal:</label>
+                        </td>
+                        <td>
+                            <input id="cardinalCheckbox" type="checkbox" />
+                        </td>
+                        <td>
+                            <label>Basis:</label>
+                        </td>
+                        <td>
+                            <input id="basisCheckbox" type="checkbox" />
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="col-sm-4">
+                <h1>Graph Primacy</h1>
+                <table>
+                    <tr>
+                        <td>
+                            <label>Linear:</label>
+                        </td>
+                        <td>
+                            <input id="linearRadio" type="radio" name="primacy" checked />
+                        </td>
+                        <td>
+                            <label>Cardinal:</label>
+                        </td>
+                        <td>
+                            <input id="cardinalRadio" type="radio" name="primacy" />
+                        </td>
+                        <td>
+                            <label>Basis:</label>
+                        </td>
+                        <td>
+                            <input id="basisRadio" type="radio" name="primacy" />
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="col-sm-2"></div>
+        </div>
+        <div id="chartArea"></div>
+        <div class="row">
+            <div class="col-sm-3">
+                <h1>Linear</h1>
+                <p id="linearReportPoint">N/A</p>
+                <p id="linearReportSlope">N/A</p>
+                <p>Yellow = Slope Magnitude of 0.1</p>
+                <svg width="210" height="200" id="linearSlopeVisual">
+                    <circle cx="10" cy="100" r="5" fill="orange"></circle>
+                </svg>
+            </div>
+            <div class="col-sm-3">
+                <h1>Cardinal</h1>
+                <p id="cardinalReportPoint">N/A</p>
+                <p id="cardinalReportSlope">N/A</p>
+                <p>Yellow = Slope Magnitude of 0.1</p>
+                <svg width="210" height="200" id="cardinalSlopeVisual">
+                    <circle cx="10" cy="100" r="5" fill="orange"></circle>
+                </svg>
+            </div>
+            <div class="col-sm-3">
+                <h1>Basis</h1>
+                <p id="basisReportPoint">N/A</p>
+                <p id="basisReportSlope">N/A</p>
+                <p>Yellow = Slope Magnitude of 0.1</p>
+                <svg width="210" height="200" id="basisSlopeVisual">
+                    <circle cx="10" cy="100" r="5" fill="orange"></circle>
+                </svg>
+            </div>
+            <div class="col-sm-3">
+                <h1>WSE</h1>
+                <p id="wseReportPoint">N/A</p>
+                <p id="wseReportSlope">N/A</p>
+                <p>Yellow = Slope Magnitude of 0.1</p>
+                <svg width="210" height="200" id="wseSlopeVisual">
+                    <circle cx="10" cy="100" r="5" fill="orange"></circle>
+                </svg>
+            </div>
+        </div>
+        <script>
+            var boundLines = [{ x: 210, y: 0 }, { x: 10, y: 100 }, { x: 210, y: 200 }];
+            var centerLine = [{ x: 210, y: 100 }, { x: 10, y: 100 }];
+            var boundLineFunction = d3.line().x(function (d) { return d.x; }).y(function (d) { return d.y; });
+            d3.select("#linearSlopeVisual").append("path")
+                .style("fill", "none").style("stroke", "yellow").style("stroke-width", "4px")
+                .attr("d", boundLineFunction(boundLines));
+            d3.select("#cardinalSlopeVisual").append("path")
+                .style("fill", "none").style("stroke", "yellow").style("stroke-width", "4px")
+                .attr("d", boundLineFunction(boundLines));
+            d3.select("#basisSlopeVisual").append("path")
+                .style("fill", "none").style("stroke", "yellow").style("stroke-width", "4px")
+                .attr("d", boundLineFunction(boundLines));
+            d3.select("#wseSlopeVisual").append("path")
+                .style("fill", "none").style("stroke", "yellow").style("stroke-width", "4px")
+                .attr("d", boundLineFunction(boundLines));
+            d3.select("#linearSlopeVisual").append("path")
+                .style("fill", "none").style("stroke", "darkgrey").style("stroke-width", "4px")
+                .attr("d", boundLineFunction(centerLine));
+            d3.select("#cardinalSlopeVisual").append("path")
+                .style("fill", "none").style("stroke", "darkgrey").style("stroke-width", "4px")
+                .attr("d", boundLineFunction(centerLine));
+            d3.select("#basisSlopeVisual").append("path")
+                .style("fill", "none").style("stroke", "darkgrey").style("stroke-width", "4px")
+                .attr("d", boundLineFunction(centerLine));
+            d3.select("#wseSlopeVisual").append("path")
+                .style("fill", "none").style("stroke", "darkgrey").style("stroke-width", "4px")
+                .attr("d", boundLineFunction(centerLine));
+            document.getElementById("riverTitle").innerText = R0.name + " (R0)";
+            main(R0);
+        </script>
+</body>
+</html>
