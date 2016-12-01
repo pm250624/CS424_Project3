@@ -1,74 +1,173 @@
-<!doctype html>
-<html>
-<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
-<meta content="utf-8" http-equiv="encoding">
+﻿<!-- Programmer: Laith Sarhan, Patrick Moriarty, Sneha Tuteja
+    Assignment:  CS424 Project 2
+    Date:        11/01/2016
+    Description: This is the main html file for a D3 impleneted cartogram.
+-->
+<!DOCTYPE html>
+<meta charset="utf-8">
 <style>
-    label {
-        margin-left: 1em;
-        margin-right: 1em;
+    html {
+        font-size: 15px;
+        font-family: 'Open Sans', sans-serif;
     }
 
-    body {
-        padding-top: 20px;
-        padding-bottom: 20px;
+    h1 {
+        font-size: 30px;
+        margin: 5px;
+        color: black;
+        font-weight: bold;
     }
 
-    .navbar {
-        margin-bottom: 20px;
+    h2 {
+        font-size: 20px;
+        margin: 0;
+        padding: 0 20px;
+        color: black;
+        text-align: center;
+    }
+
+    h3 {
+        font-size: 13px;
+        margin: 0;
+        padding: 0 3px;
+        color: #615E5E;
+        text-align: left;
+    }
+
+    section {
+        border: 1px solid #7C7878;
+        padding: 2px;
+        overflow: hidden;
+    }
+
+        section > section {
+            float: left;
+        }
+
+    .sectionHolder {
+        padding-left: 2px;
+    }
+
+    .background {
+        fill: none;
+        pointer-events: all;
+    }
+
+
+    .explain_1 {
+        max-width: 240px;
+        max-height: 340px;
+        word-wrap: break-word;
+        overflow-y: scroll;
+    }
+
+    .explain_2 {
+        max-width: 475px;
+        word-wrap: break-word;
+    }
+
+    .explain_3 {
+        max-width: 575px;
+        word-wrap: break-word;
+    }
+
+    .line {
+        fill: none;
+        stroke: black;
+        stroke-width: 3px;
+    }
+
+    .area {
+        fill: lightsteelblue;
+    }
+
+    .lineBold {
+        fill: none;
+        stroke: black;
+        stroke-width: 7px;
+    }
+
+
+    .lineDashedBold {
+        fill: none;
+        stroke: black;
+        stroke-dasharray: 10, 5;
+        stroke-width: 7px;
+    }
+
+    .feature {
+        fill: #ccc;
+        cursor: pointer;
+    }
+
+        .feature.active {
+            fill: red;
+        }
+
+    .mesh {
+        fill: none;
+        stroke: #fff;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    .button {
+        background: #A47D7D;
+        border-radius: 10px;
+        font-family: Arial;
+        color: #ffffff;
+        font-size: 14px;
+        padding: 5px 20px 5px 20px;
+        text-decoration: none;
+        margin-top: 8px;
+        cursor: pointer;
     }
 </style>
-<head>
-    <title>River Visualization</title>
-    <!-- CSS Libs-->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
 
-    <!-- JS Libs-->
-    <script src="https://d3js.org/d3.v4.min.js" charset="utf-8"></script>
+<html>
+<head>
+    <title>CS 424 Project 3</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+    <script src="https://d3js.org/d3-queue.v4.min.js"></script>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" charset="utf-8"></script>
-
-    <!-- CSS Src -->
-    <link rel="stylesheet" href="./src/css/main.css" />
-
-    <!-- JS Src -->
-    <!-- Main Script -->
-    <script src="./src/js/main.js" charset="utf-8"></script>
-
-    <!-- JSON data in JS Files -->
-    <script src="./src/js/R0.js" charset="utf-8"></script>
-    <script src="./src/js/R1.js" charset="utf-8"></script>
-    <script src="./src/js/R2.js" charset="utf-8"></script>
-    <script src="./src/js/R3.js" charset="utf-8"></script>
-    <script src="./src/js/R4.js" charset="utf-8"></script>
-    <script src="./src/js/R5.js" charset="utf-8"></script>
-    <script src="./src/js/R6.js" charset="utf-8"></script>
-    <script src="./src/js/R10.js" charset="utf-8"></script>
-    <script src="./src/js/R11.js" charset="utf-8"></script>
-    <script src="./src/js/R12.js" charset="utf-8"></script>
-    <script src="./src/js/R13.js" charset="utf-8"></script>
-    <script src="./src/js/R14.js" charset="utf-8"></script>
-    <script src="./src/js/R16.js" charset="utf-8"></script>
-    <script src="./src/js/R18.js" charset="utf-8"></script>
-
-    <!-- Individual Visualization Scripts -->
+    <script src="lib/topojson.js"></script>
 </head>
 <body>
     <div class="container">
-        <!-- Static navbar -->
-        <nav class="navbar navbar-default" role="navigation">
-            <div class="container-fluid">
-                <div class="navbar-collapse collapse">
-                    <ul class="nav navbar-nav">
-                        <li><a href="#" style="font-size:400%" onclick="return incrementRiverContext(false)">&lArr;</a></li>
-                        <li><a id="riverTitle" href="#" style="padding-left:4cm;font-size:200%" data-river="R0">River</a></li>
-                    </ul>
-                    <ul class="nav navbar-nav navbar-right">
-                        <li><a href="#" style="font-size:400%" onclick="return incrementRiverContext(true)">&rArr;</a></li>
-                    </ul>
-                </div><!--/.nav-collapse -->
-            </div><!--/.container-fluid -->
-        </nav>
+        <h1>The River Flows; It Flows to the Sea</h1>
+        <!-- Section 1 -->
         <div class="row">
+            <div class="col-sm-12">
+                <div id="select">
+                    <select id="dataList" class="button"></select>
+                    <select id="dataList2" class="button"></select>
+                    <button id="button101" class="button" type="button">Analyze River</button>
+                    <button id="button102" class="button" type="button">Riffle & Pool #</button>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-9">
+                <!-- SVG canavs will be placed here (using the D3 code in mapcode.js) -->
+                <div id="section2" style="position:relative;top:5px;background:#cccccc;background-image: linear-gradient(to bottom, #999999, #cccccc);border-width:5px;border-style: solid;border-color: #A47D7D;">
+                    <h2 id="explain2"></h2>
+                    <h3 id="directions2" class="explain_3"></h3>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div id="section4" style="position:relative;top:5px;background:#fff">
+                    <h2 id="explain4"></h2>
+                    <h4 id="directions4"></h4>
+                    <ul id="explain5" class="explain_1"></ul>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="row" id="section3">
+
             <div class="col-sm-2"></div>
             <div class="col-sm-4">
                 <h1>Graph Visibility</h1>
@@ -120,7 +219,10 @@
                     </tr>
                 </table>
             </div>
-            <div class="col-sm-2"></div>
+            <div class="col-sm-2">
+                <h2 id="explain3"></h2>
+                <h3 id="directions3" class="explain_2"></h3>
+            </div>
         </div>
         <div id="chartArea"></div>
         <div class="row">
@@ -161,6 +263,10 @@
                 </svg>
             </div>
         </div>
+        <!--</div>-->
+        <!--</section>   End sectionHolder -->
+
+
         <script>
             var boundLines = [{ x: 210, y: 0 }, { x: 10, y: 100 }, { x: 210, y: 200 }];
             var centerLine = [{ x: 210, y: 100 }, { x: 10, y: 100 }];
@@ -189,8 +295,17 @@
             d3.select("#wseSlopeVisual").append("path")
                 .style("fill", "none").style("stroke", "darkgrey").style("stroke-width", "4px")
                 .attr("d", boundLineFunction(centerLine));
-            document.getElementById("riverTitle").innerText = R0.name + " (R0)";
-            main(R0);
         </script>
+        <script type="text/javascript" src="./script.js"></script>
+
+
+        <!-- <script src = "script.js"></script> -->
+    </div>
+    <br />
+    <div class="container">
+        <footer>
+            <p>By: Patrick Moriarty, Louis Ludkowski, and Patrick Tam</p>
+        </footer>
+    </div>
 </body>
 </html>
