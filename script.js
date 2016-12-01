@@ -95,7 +95,7 @@ myButton102.onclick = function () {
         var riffleAndPool = riverData[curRiverNum].rifflesAndPools[sequenceNum - 1];
 
         var xStart = riffleAndPool.location - 25, xEnd = riffleAndPool.location + 25;
-        riverSection = ((xStart + 1) + " meters to " + xEnd + " meters");
+        riverSection = ((xStart) + " meters to " + xEnd + " meters");
         myDataList2.value = riverSection;
 
         drawRiverSection(2, xStart, xEnd);
@@ -130,12 +130,12 @@ myDataList.onclick = function () {
 
         var riverSection = "";
         for (var i = 0; i < riverData[curRiverNum].z_interp.length; i += lticks_x) {
-            riverSection = ((i + 1) + " meters to " + Math.min((i + lticks_x), riverData[curRiverNum].z_interp.length) + " meters");
+            riverSection = ((i) + " meters to " + Math.min((i + lticks_x), riverData[curRiverNum].z_interp.length) + " meters");
             addDataToList2(riverSection)
         }
         // Initialize to the beginning of the river
         var xStart = 0, xEnd = lticks_x;
-        riverSection = ((xStart + 1) + " meters to " + xEnd + " meters");
+        riverSection = ((xStart) + " meters to " + xEnd + " meters");
         myDataList2.value = riverSection;
 
         drawRiverSection(2, xStart, xEnd);
@@ -158,7 +158,7 @@ myDataList2.onclick = function () {
     if (num != -1) {
         // Initialize to the beginning of the river
         var xStart = num * lticks_x, xEnd = Math.min((num * lticks_x + lticks_x), riverData[curRiverNum].z_interp.length);
-        riverSection = ((xStart + 1) + " meters to " + xEnd + " meters");
+        riverSection = ((xStart) + " meters to " + xEnd + " meters");
         //myDataList2.value = riverSection;
 
         drawRiverSection(2, xStart, xEnd);
@@ -320,7 +320,7 @@ function ready(error, results) {
     var riverSection = "", xStart = 0, xEnd = lticks_x;
     for (var i = 0; i < riverData[curRiverNum].z_interp.length; i += lticks_x) {
 
-        riverSection = ((i + 1) + " meters to " + Math.min((i + lticks_x), riverData[curRiverNum].z_interp.length) + " meters");
+        riverSection = ((i) + " meters to " + Math.min((i + lticks_x), riverData[curRiverNum].z_interp.length) + " meters");
         addDataToList2(riverSection)
     }
 
@@ -445,7 +445,7 @@ function drawRiver(inSpace, xStart, xEnd) {
     acolor_saturation = .5;
     aclass = "area";
 
-    drawLine(inSpace, lineRec, minValue, maxValue, 1, 1, 10);
+    drawLine(inSpace, lineRec, minValue, maxValue, 1, 1, 10, xStart);
 
 
     for (var i = 0; i < ticks; i++) {
@@ -462,10 +462,10 @@ function drawRiver(inSpace, xStart, xEnd) {
     acolor_saturation = 1;
     aclass = "area";
 
-    drawLine(inSpace, lineRec, minValue, maxValue, 0, 2, 10);
+    drawLine(inSpace, lineRec, minValue, maxValue, 0, 2, 10, xStart);
 
 
-    secTextUpdate(inSpace, riverData[curRiverNum].name, "Viewing section " + (xStart + 1) + " to " + xEnd + " meters. Deepest water is " + maxDepth + " meters at " + maxDepthIndex + " meters from starting position. Shallowest water is " + minDepth + " meters at " + minDepthIndex + " meters from the starting position.");
+    secTextUpdate(inSpace, riverData[curRiverNum].name, "Viewing section " + (xStart) + " to " + xEnd + " meters. Deepest water is " + maxDepth + " meters at " + maxDepthIndex + " meters from starting position. Shallowest water is " + minDepth + " meters at " + minDepthIndex + " meters from the starting position.");
 
 
     // maintain notes section
@@ -655,7 +655,7 @@ function drawRiverSection(inSpace, xStart, xEnd) {
     acolor_saturation = .5;
     aclass = "area";
 
-    drawLine(inSpace, lineRec, minValue, maxValue, 1, 1, 0);
+    drawLine(inSpace, lineRec, minValue, maxValue, 1, 1, 0, xStart);
 
 
     for (var i = 0; i < ticks; i++) {
@@ -672,10 +672,10 @@ function drawRiverSection(inSpace, xStart, xEnd) {
     acolor_saturation = 1;
     aclass = "area";
 
-    drawLine(inSpace, lineRec, minValue, maxValue, 0, 2, 0);
+    drawLine(inSpace, lineRec, minValue, maxValue, 0, 2, 0, xStart);
 
 
-    secTextUpdate(inSpace, riverData[curRiverNum].name, "Viewing section " + (xStart + 1) + " to " + xEnd + " meters. Deepest water is " + maxDepth + " meters at " + maxDepthIndex + " meters from starting position. Shallowest water is " + minDepth + " meters at " + minDepthIndex + " meters from the starting position.");
+    secTextUpdate(inSpace, riverData[curRiverNum].name, "Viewing section " + (xStart) + " to " + xEnd + " meters. Deepest water is " + maxDepth + " meters at " + maxDepthIndex + " meters from starting position. Shallowest water is " + minDepth + " meters at " + minDepthIndex + " meters from the starting position.");
 
 
     // maintain notes section
@@ -711,7 +711,7 @@ function drawRiverSection(inSpace, xStart, xEnd) {
 
 
 
-function drawLine(inSpace, lineRec, y_min, y_max, refresh, fillArea, inTicks_x) {
+function drawLine(inSpace, lineRec, y_min, y_max, refresh, fillArea, inTicks_x, xStart) {
 
     // Which svg space are we using?
     svgSpace_set(inSpace, lineChart_id);
@@ -768,7 +768,7 @@ function drawLine(inSpace, lineRec, y_min, y_max, refresh, fillArea, inTicks_x) 
 
 
         //var xScale = d3.scaleLinear().domain([0, numberOfDataPoints]).range([0, width]);
-        var xScale = d3.scaleLinear().domain([0, numberOfDataPoints]).range([0, width]);
+        var xScale = d3.scaleLinear().domain([xStart, numberOfDataPoints + xStart]).range([0, width]);
         var xAxis = d3.axisBottom(xScale)
                       .ticks(numberOfTicks)
                       .tickPadding([15]);
