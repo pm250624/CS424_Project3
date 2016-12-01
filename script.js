@@ -465,7 +465,7 @@ function drawRiver(inSpace, xStart, xEnd) {
     drawLine(inSpace, lineRec, minValue, maxValue, 0, 2, 10, xStart);
 
 
-    secTextUpdate(inSpace, riverData[curRiverNum].name, "Viewing section " + (xStart) + " to " + xEnd + " meters. Deepest water is " + maxDepth + " meters at " + maxDepthIndex + " meters from starting position. Shallowest water is " + minDepth + " meters at " + minDepthIndex + " meters from the starting position.");
+    secTextUpdate(inSpace, riverData[curRiverNum].name, "Viewing section " + (xStart + 1) + " to " + xEnd + " meters. Deepest water is " + maxDepth + " meters at " + maxDepthIndex + " meters from starting position. Shallowest water is " + minDepth + " meters at " + minDepthIndex + " meters from the starting position.");
 
 
     // maintain notes section
@@ -675,7 +675,7 @@ function drawRiverSection(inSpace, xStart, xEnd) {
     drawLine(inSpace, lineRec, minValue, maxValue, 0, 2, 0, xStart);
 
 
-    secTextUpdate(inSpace, riverData[curRiverNum].name, "Viewing section " + (xStart) + " to " + xEnd + " meters. Deepest water is " + maxDepth + " meters at " + maxDepthIndex + " meters from starting position. Shallowest water is " + minDepth + " meters at " + minDepthIndex + " meters from the starting position.");
+    secTextUpdate(inSpace, riverData[curRiverNum].name, "Viewing section " + (xStart + 1) + " to " + xEnd + " meters. Deepest water is " + maxDepth + " meters at " + maxDepthIndex + " meters from starting position. Shallowest water is " + minDepth + " meters at " + minDepthIndex + " meters from the starting position.");
 
 
     // maintain notes section
@@ -716,13 +716,13 @@ function drawLine(inSpace, lineRec, y_min, y_max, refresh, fillArea, inTicks_x, 
     // Which svg space are we using?
     svgSpace_set(inSpace, lineChart_id);
 
-    var margin = { top: 20, right: 20, bottom: 20, left: 30 };
+    var margin = { top: 20, right: 20, bottom: 40, left: 30 };
     //var width = w_Sec - margin.right - margin.left;
     var width = 840 - margin.right - margin.left;
     var height = h_Sec - margin.top - margin.bottom;
 
     var svg;
-    var tickPadding = 6;
+    var tickPadding = 8;
 
     if (refresh) { // Starting Fresh
         d3.select(svgSpace).select('svg').remove();  //first clear away the old graph
@@ -768,7 +768,7 @@ function drawLine(inSpace, lineRec, y_min, y_max, refresh, fillArea, inTicks_x, 
 
 
         //var xScale = d3.scaleLinear().domain([0, numberOfDataPoints]).range([0, width]);
-        var xScale = d3.scaleLinear().domain([xStart, numberOfDataPoints + xStart]).range([0, width]);
+        var xScale = d3.scaleLinear().domain([0 + xStart, numberOfDataPoints + xStart]).range([0, width]);
         var xAxis = d3.axisBottom(xScale)
                       .ticks(numberOfTicks)
                       .tickPadding([15]);
@@ -790,8 +790,9 @@ function drawLine(inSpace, lineRec, y_min, y_max, refresh, fillArea, inTicks_x, 
            .call(xAxis)
            .selectAll("text")
            .style("text-anchor", "middle")
-           .attr("dx", "-.08em")
-           .attr("dy", "-.45em");
+           .attr("transform", "translate(20,5)rotate(60)")
+           .attr("dx", "-.08em");
+           //.attr("dy", ".45em");
 
 
         svg.append("g")
