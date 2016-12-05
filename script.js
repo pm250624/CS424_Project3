@@ -23,7 +23,7 @@ const h_Sec4 = 250;
 
 //var colors10=["Black","Blue","Purple","DarkGray","Green","Cyan","Magenta","DarkOrange","Red","Gold"];
 var colors10 = ["Indigo", "Blue", "Purple", "Brown", "Green", "Cyan", "Magenta", "DarkOrange", "Red", "Gold"];
-var lcolor, lcolor_saturation, lclass, lticks, lticks_x = 50, xStart_save = 0, xEnd_save = 50;
+var lcolor, lcolor_saturation, lclass, lticks, lticks_x = 300, xStart_save = 0, xEnd_save = 100;
 var acolor, acolor_saturation, aclass;
 
 const extremaRiffle = -1; //
@@ -94,7 +94,7 @@ myButton102.onclick = function () {
     if (Number.isInteger(sequenceNum) && riverData[curRiverNum].riverAnalyzed) {
         var riffleAndPool = riverData[curRiverNum].rifflesAndPools[sequenceNum - 1];
 
-        var xStart = riffleAndPool.location - 25, xEnd = riffleAndPool.location + 25;
+        var xStart = Math.max(riffleAndPool.location - (lticks_x / 2),0), xEnd = Math.min(riffleAndPool.location + (lticks_x / 2), riverData[curRiverNum].z_interp.length);
         riverSection = ((xStart) + " meters to " + xEnd + " meters");
         myDataList2.value = riverSection;
 
@@ -388,8 +388,8 @@ function drawRiver(inSpace, xStart, xEnd) {
 
     //console.log("xStart=" + xStart + ", xEnd=" + xEnd);
 
-    var ticks = xEnd - xStart;
-
+    var ticks = Math.min(xEnd - xStart, riverData[curRiverNum].z_interp.length);
+    xEnd=ticks;
 
     for (var i = 0; i < ticks; i++) {
 
@@ -506,9 +506,9 @@ function drawRiver(inSpace, xStart, xEnd) {
             console.log("extrema=" + extremaName + ", i=" + i);
 
             /*var noteObject = {
-                name: extremaName, location: extrema.location, lenExtrema: extrema.lenExtrema, elevation: extrema.elevation, waterDepth: extrema.waterDepth, lenEntrance: extrema.lenEntrance, lenExit: extrema.lenExit
-            };
-            noteObject.name = extremaName;*/
+             name: extremaName, location: extrema.location, lenExtrema: extrema.lenExtrema, elevation: extrema.elevation, waterDepth: extrema.waterDepth, lenEntrance: extrema.lenEntrance, lenExit: extrema.lenExit
+             };
+             noteObject.name = extremaName;*/
 
             secNoteSpace(extrema, i, lcolor, lcolor_saturation);
 
@@ -532,7 +532,7 @@ function drawRiver(inSpace, xStart, xEnd) {
 
         //drawLine(inSpace, lineRec, minValue, maxValue, 0, 0, 10);
 
-        secTextUpdate(4, "Notes for river " + (curRiverNum), "We found " + riverData[curRiverNum].rifflesAndPools.length + " riffles and pools");                         // clear header for notes section
+        secTextUpdate(4, "Notes for river " + (curRiverNum+1), "We found " + riverData[curRiverNum].rifflesAndPools.length + " riffles and pools");                         // clear header for notes section
         //secTextUpdate(4, "Notes ", "");                         // clear header for notes section
     }
 
@@ -591,14 +591,17 @@ function drawRiverSection(inSpace, xStart, xEnd) {
     var width = w_Sec - margin.right - margin.left;
     var height = h_Sec - margin.top - margin.bottom;
 
-    lticks = 20;   // breaking the y-scale up into 40 increments
+    lticks = 15;   // breaking the y-scale up into 40 increments
+
+    var ticks = Math.min(xEnd - xStart, riverData[curRiverNum].z_interp.length);
+    xEnd=ticks;
 
     xStart_save = xStart, xEnd_save = xEnd;
 
 
     //console.log("xStart=" + xStart + ", xEnd=" + xEnd);
 
-    var ticks = Math.min(lticks_x, xEnd - xStart)
+    //var ticks = Math.min(lticks_x, xEnd - xStart)
 
 
     for (var i = 0; i < ticks; i++) {
@@ -655,7 +658,8 @@ function drawRiverSection(inSpace, xStart, xEnd) {
     acolor_saturation = .5;
     aclass = "area";
 
-    drawLine(inSpace, lineRec, minValue, maxValue, 1, 1, 0, xStart);
+    //drawLine(inSpace, lineRec, minValue, maxValue, 1, 1, 0, xStart);
+    drawLine(inSpace, lineRec, minValue, maxValue, 1, 1, 10, xStart);
 
 
     for (var i = 0; i < ticks; i++) {
@@ -672,10 +676,10 @@ function drawRiverSection(inSpace, xStart, xEnd) {
     acolor_saturation = 1;
     aclass = "area";
 
-    drawLine(inSpace, lineRec, minValue, maxValue, 0, 2, 0, xStart);
+    //drawLine(inSpace, lineRec, minValue, maxValue, 0, 2, 0, xStart);
+    drawLine(inSpace, lineRec, minValue, maxValue, 0, 1, 10, xStart);
 
-
-    secTextUpdate(inSpace, riverData[curRiverNum].name, "Viewing section " + (xStart + 1) + " to " + xEnd + " meters. Deepest water is " + maxDepth + " meters at " + maxDepthIndex + " meters from starting position. Shallowest water is " + minDepth + " meters at " + minDepthIndex + " meters from the starting position.");
+    secTextUpdate(inSpace, riverData[curRiverNum].name, "Viewing section " + (xStart + 1) + " to " + (xStart+xEnd) + " meters. Deepest water is " + maxDepth + " meters at " + maxDepthIndex + " meters from starting position. Shallowest water is " + minDepth + " meters at " + minDepthIndex + " meters from the starting position.");
 
 
     // maintain notes section
@@ -686,16 +690,13 @@ function drawRiverSection(inSpace, xStart, xEnd) {
         var rifAndPoNote = "", extrema, extremaName = "";
 
         /*for (var i = 0; i < riverData[curRiverNum].rifflesAndPools.length; i++) {
+         extrema = riverData[curRiverNum].rifflesAndPools[i];
+         extremaName = (extrema.Type === extremaPool) ? "Pool" : "Riffle";
+         rifAndPoNote = (i + 1) + ") " + extremaName + " at " + extrema.location + "m from the starting location, is " + (extrema.lenExtrema) + "m wide, " + extrema.elevation + "m in elevation, and " + extrema.waterDepth + "m below the surface. The len of Entrance is " + extrema.lenEntrance + ", and the length of exit is " + extrema.lenExit + ".";
+         secNoteSpace(rifAndPoNote, i, "DarkRed", .7);
+         }*/
 
-            extrema = riverData[curRiverNum].rifflesAndPools[i];
-            extremaName = (extrema.Type === extremaPool) ? "Pool" : "Riffle";
-            rifAndPoNote = (i + 1) + ") " + extremaName + " at " + extrema.location + "m from the starting location, is " + (extrema.lenExtrema) + "m wide, " + extrema.elevation + "m in elevation, and " + extrema.waterDepth + "m below the surface. The len of Entrance is " + extrema.lenEntrance + ", and the length of exit is " + extrema.lenExit + ".";
-
-            secNoteSpace(rifAndPoNote, i, "DarkRed", .7);
-
-        }*/
-
-        secTextUpdate(4, "Notes for river " + (curRiverNum), "We found " + riverData[curRiverNum].rifflesAndPools.length + " riffles and pools");                         // clear header for notes section
+        secTextUpdate(4, "Notes for river " + (curRiverNum+1), "We found " + riverData[curRiverNum].rifflesAndPools.length + " riffles and pools");                         // clear header for notes section
         //secTextUpdate(4, "Notes ", "");                         // clear header for notes section
 
     }
@@ -717,8 +718,8 @@ function drawLine(inSpace, lineRec, y_min, y_max, refresh, fillArea, inTicks_x, 
     svgSpace_set(inSpace, lineChart_id);
 
     var margin = { top: 20, right: 20, bottom: 40, left: 30 };
-    //var width = w_Sec - margin.right - margin.left;
-    var width = 840 - margin.right - margin.left;
+    var width = w_Sec - margin.right - margin.left;
+    //var width = 840 - margin.right - margin.left;
     var height = h_Sec - margin.top - margin.bottom;
 
     var svg;
@@ -770,8 +771,8 @@ function drawLine(inSpace, lineRec, y_min, y_max, refresh, fillArea, inTicks_x, 
         //var xScale = d3.scaleLinear().domain([0, numberOfDataPoints]).range([0, width]);
         var xScale = d3.scaleLinear().domain([0 + xStart, numberOfDataPoints + xStart]).range([0, width]);
         var xAxis = d3.axisBottom(xScale)
-                      .ticks(numberOfTicks)
-                      .tickPadding([15]);
+            .ticks(numberOfTicks)
+            .tickPadding([15]);
         //.tickFormat(function(d) { return lineRec[d].substring(2); });   // Dates that are displayed at the bottom of each column
 
 
@@ -781,24 +782,24 @@ function drawLine(inSpace, lineRec, y_min, y_max, refresh, fillArea, inTicks_x, 
 
         var yScale = d3.scaleLinear().domain([y_min, y_max]).range([height, 0]);
         var yAxis = d3.axisLeft(yScale)
-           .ticks(lticks);
+            .ticks(lticks);
         //.tickPadding([1]);
 
         svg.append("g")
-           .attr("class", "axis")
+            .attr("class", "axis")
             .attr("transform", "translate(" + tickPadding + "," + height + ")")
-           .call(xAxis)
-           .selectAll("text")
-           .style("text-anchor", "middle")
-           .attr("transform", "translate(20,5)rotate(60)")
-           .attr("dx", "-.08em");
-           //.attr("dy", ".45em");
+            .call(xAxis)
+            .selectAll("text")
+            .style("text-anchor", "middle")
+            .attr("transform", "translate(20,5)rotate(60)")
+            .attr("dx", "-.08em");
+        //.attr("dy", ".45em");
 
 
         svg.append("g")
-        .attr("class", "axis")
-        .attr("transform", "translate(" + tickPadding + ",0)")
-        .call(yAxis);
+            .attr("class", "axis")
+            .attr("transform", "translate(" + tickPadding + ",0)")
+            .call(yAxis);
     }
 
 
@@ -817,12 +818,12 @@ function drawLine(inSpace, lineRec, y_min, y_max, refresh, fillArea, inTicks_x, 
         .style("stroke", lcolor)
         /*
          .style("stroke", function(d) { var rColor=lcolor;
-                                      if(d.fill===extremaPool)
-                                      {rColor="Blue";}
-                                       else if (d.fill===extremaRiffle)
-                                       {rColor="Gold";}
-                                       console.log("rColor="+rColor);
-                                       return rColor;})*/
+         if(d.fill===extremaPool)
+         {rColor="Blue";}
+         else if (d.fill===extremaRiffle)
+         {rColor="Gold";}
+         console.log("rColor="+rColor);
+         return rColor;})*/
 
         .style("opacity", lcolor_saturation);
     //.on("click", function(x){console.log("clicked on line, year=" + x);});
@@ -1062,20 +1063,22 @@ function secNoteSpace(inNote, inNoteId, inColor, inColor_saturation) {
 
     id1 = inNoteId;
 
-    //console.log("!!!!!!!!!! Hey!!!!!!  in secNoteSpace, ID1=" + id1 + ", inNote ="+ inNote);
+    if(inNote.name === "Pool")
+        lcolor = "blue";
+    else
+        lcolor = "orange";
+
+
 
     var formInfo = d3.select("#explain5").style("border", "4px solid black").style("border-radius", "6px").style("font-size", "120%")
-      .append("form").append("fieldset").attr("disabled","true").style("border","4px solid red").style("border-radius","6px").style("font-size","120%")
-      .attr("id", ("dum" + id1));
-      //.append("li")
+        .append("form").append("fieldset").attr("disabled","true").style("border","4px solid " + lcolor).style("border-radius","6px").style("font-size","120%")
+        .attr("id", ("dum" + id1));
+    //.append("li")
     //.attr("id", ("dum" + id1));
 
     formInfo.append("legend").text(id1);
     formInfo.append("label").text("Type:").style("color", "black");
-    if(inNote.name === "Pool")
-        formInfo.append("label").text(inNote.name).style("color", "blue");
-    else
-        formInfo.append("label").text(inNote.name).style("color", "orange");
+    formInfo.append("label").text(inNote.name).style("color", lcolor);
     formInfo.append("br");
     formInfo.append("label").text("xPos:").style("color", "black");
     formInfo.append("label").text(inNote.location).style("color", "green");
@@ -1095,7 +1098,7 @@ function secNoteSpace(inNote, inNoteId, inColor, inColor_saturation) {
     formInfo.append("label").text("Exit Len:").style("color", "black");
     formInfo.append("label").text(inNote.lenExit).style("color", "slateblue");
 
-   // var rifAndPoNote = inNoteId + ") " + inNote.name + " at " + inNote.location + "m from the starting location, is " + (inNote.lenExtrema) + "m wide, " + inNote.elevation + "m in elevation, and " + inNote.waterDepth + "m below the surface. The len of Entrance is " + inNote.lenEntrance + ", and the length of exit is " + inNote.lenExit + ".";
+    // var rifAndPoNote = inNoteId + ") " + inNote.name + " at " + inNote.location + "m from the starting location, is " + (inNote.lenExtrema) + "m wide, " + inNote.elevation + "m in elevation, and " + inNote.waterDepth + "m below the surface. The len of Entrance is " + inNote.lenEntrance + ", and the length of exit is " + inNote.lenExit + ".";
 
 
 
@@ -1153,7 +1156,7 @@ function secNoteSpace_refresh() {
 
 
 function louisDraw(river) {
-   // d3.select("#explain5").selectAll("li").remove();  //clear away old notes
+    // d3.select("#explain5").selectAll("li").remove();  //clear away old notes
     $(".fullChartSVG").remove();
     var fullDataset = [];
     for (var index = 0; index < river.x_interp.length ; index++) {
@@ -1196,8 +1199,8 @@ function louisDraw(river) {
     extremaDataset.push(fullDataset[fullDataset.length - 1]);
 
     var margin = { top: 30, right: 20, bottom: 30, left: 50 },
-    width = 1000 - margin.left - margin.right,
-    height = 500 - margin.top - margin.bottom;
+        width = 1000 - margin.left - margin.right,
+        height = 500 - margin.top - margin.bottom;
 
     var xScale = d3.scaleLinear()
         .domain([d3.min(river.x_interp), d3.max(river.x_interp)])
@@ -1214,17 +1217,34 @@ function louisDraw(river) {
         .range([height, 0]);
 
     var yScaleInverted = d3.scaleLinear()
-            .range([d3.min(river.z_interp) - yAxisRange / 10.0, d3.max(river.wse_interp) + yAxisRange / 10.0])
-            .domain([height, 0]);
+        .range([d3.min(river.z_interp) - yAxisRange / 10.0, d3.max(river.wse_interp) + yAxisRange / 10.0])
+        .domain([height, 0]);
 
     // Adds the svg canvas
     var svg = d3.select("#chartArea")
         .append("svg").attr("class","fullChartSVG")
-            .attr("width", width + margin.left + margin.right)
-            .attr("height", height + margin.top + margin.bottom)
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
         .append("g")
-            .attr("transform",
-                  "translate(" + margin.left + "," + margin.top + ")");
+        .attr("transform",
+            "translate(" + margin.left + "," + margin.top + ")");
+
+       svg.on("click", function() {
+           var coords = d3.mouse(this);
+
+           // Normally we go from data to pixels, but here we're doing pixels to data
+           var newData = {
+               x: Math.round(xScale.invert(coords[0])),  // Takes the pixel number to convert to number
+               y: Math.round(yScale.invert(coords[1]))
+           };
+
+           var xStart = Math.max(newData.x - (lticks_x / 2), 0), xEnd = Math.min(newData.x + (lticks_x / 2), riverData[curRiverNum].z_interp.length-1);
+           riverSection = ((xStart) + " meters to " + xEnd + " meters");
+           myDataList2.value = riverSection;
+
+           drawRiverSection(2, xStart, xEnd);
+
+       });
 
     // Add the X Axis
     svg.append("g")
@@ -1272,17 +1292,17 @@ function louisDraw(river) {
             curveDatasets.push(basisDataset);
         mouseoverForData(curveDatasets);
         /*cardinalDataset.forEach(function (d) {
-            d3.select("#linearReportPoint").append("p").html(d.x_interp.toFixed(0) + ",");
-        })
-        cardinalDataset.forEach(function (d) {
-            d3.select("#cardinalReportPoint").append("p").html(d.z_interp.toFixed(4) + ",");
-        })
-        basisDataset.forEach(function (d) {
-            d3.select("#basisReportPoint").append("p").html(d.x_interp.toFixed(0) + ",");
-        })
-        basisDataset.forEach(function (d) {
-            d3.select("#wseReportPoint").append("p").html(d.z_interp.toFixed(4) + ",");
-        })*/
+         d3.select("#linearReportPoint").append("p").html(d.x_interp.toFixed(0) + ",");
+         })
+         cardinalDataset.forEach(function (d) {
+         d3.select("#cardinalReportPoint").append("p").html(d.z_interp.toFixed(4) + ",");
+         })
+         basisDataset.forEach(function (d) {
+         d3.select("#basisReportPoint").append("p").html(d.x_interp.toFixed(0) + ",");
+         })
+         basisDataset.forEach(function (d) {
+         d3.select("#wseReportPoint").append("p").html(d.z_interp.toFixed(4) + ",");
+         })*/
     }
 
     document.getElementById("linearCheckbox").onclick = recheckLines;
@@ -1329,11 +1349,13 @@ function louisDraw(river) {
 
         focusZ.forEach(function (d, i) {
             d.append("circle").attr("r", 4.5).style("fill", "rgb(" + datasets[i].color + ")").attr("id", datasets[i].idStr);
+
             slopesEle[i].attr("id", datasets[i].idStr + "Slope");
         });
 
         focusWSE.append("circle").attr("id", "wsePoint")
             .attr("r", 4.5).style("fill", "rgb(70,130,180)");
+
         slopeWSEEle.attr("id", "wsePointSlope");
 
         svg.append("rect")
@@ -1353,6 +1375,10 @@ function louisDraw(river) {
                 focusWSE.style("display", "none");
             })
             .on("mousemove", mousemove);
+
+
+
+
 
         function mousemove() {
             var xVal = Math.floor(xScale.invert(d3.mouse(this)[0]));
@@ -1380,7 +1406,10 @@ function louisDraw(river) {
         }
     }
 
-    function findD(lineDataset, curve, isWSE) {
+
+
+
+function findD(lineDataset, curve, isWSE) {
         var line;
         if (isWSE) {
             line = d3.line()
@@ -1412,6 +1441,8 @@ function louisDraw(river) {
         return svg.append("path")
             .attr("class", "chartLine").style("fill", "none").style("stroke", "rgba(" + color + "," + alpha + ")").style("stroke-width", "2px")
             .attr("d", linePos);
+
+
     }
 
     d3.timer(function (elapsed) {
@@ -1477,8 +1508,5 @@ function louisDraw(river) {
         }
     });
 }
-
-
-
 
 

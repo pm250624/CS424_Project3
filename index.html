@@ -1,8 +1,4 @@
-﻿<!-- Programmer: Laith Sarhan, Patrick Moriarty, Sneha Tuteja
-    Assignment:  CS424 Project 2
-    Date:        11/01/2016
-    Description: This is the main html file for a D3 impleneted cartogram.
--->
+﻿
 <!DOCTYPE html>
 <meta charset="utf-8">
 <style>
@@ -34,12 +30,12 @@
         text-align: left;
     }
 
+
     section {
         border: 1px solid #7C7878;
         padding: 2px;
         overflow: hidden;
     }
-
         section > section {
             float: left;
         }
@@ -56,7 +52,7 @@
 
     .explain_1 {
         max-width: 240px;
-        max-height: 340px;
+        max-height: 400px;
         word-wrap: break-word;
         overflow-y: scroll;
     }
@@ -135,135 +131,146 @@
     <script src="lib/topojson.js"></script>
 </head>
 <body>
-    <div class="container">
+
         <h1>The River Flows; It Flows to the Sea</h1>
-        <!-- Section 1 -->
-        <div class="row">
-            <div class="col-sm-12">
+        <section class="sectionHolder">
+            <!-- Section 1 -->
+            <section >
+            <!--<div class="row">-->
+            <!--<div class="col-sm-12">-->
                 <div id="select">
                     <select id="dataList" class="button"></select>
                     <select id="dataList2" class="button"></select>
                     <button id="button101" class="button" type="button">Analyze River</button>
                     <button id="button102" class="button" type="button">Riffle & Pool #</button>
                 </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-9">
+            <!--</div>-->
+        <!--</div>-->
+            <!--<div class="row">-->
+                <!-- <div class="col-sm-9">-->
                 <!-- SVG canavs will be placed here (using the D3 code in mapcode.js) -->
                 <div id="section2" style="position:relative;top:5px;background:#cccccc;background-image: linear-gradient(to bottom, #999999, #cccccc);border-width:5px;border-style: solid;border-color: #A47D7D;">
                     <h2 id="explain2"></h2>
                     <h3 id="directions2" class="explain_3"></h3>
                 </div>
-            </div>
-            <div class="col-sm-3">
+
+                </section>
+
+            <!-- </div>-->
+
+            <!--</div>-->
+
+            <section>
                 <div id="section4" style="position:relative;top:5px;background:#fff">
                     <h2 id="explain4"></h2>
                     <h4 id="directions4"></h4>
                     <ul id="explain5" class="explain_1"></ul>
                 </div>
-            </div>
-        </div>
+            </section>
 
 
-        <div class="row" id="section3">
+            <div class="col-sm-3">
+            </div>
 
-            <div class="col-sm-2"></div>
-            <div class="col-sm-4">
-                <h1>Graph Visibility</h1>
-                <table>
-                    <tr>
-                        <td>
-                            <label>Linear:</label>
-                        </td>
-                        <td>
-                            <input id="linearCheckbox" type="checkbox" />
-                        </td>
-                        <td>
-                            <label>Cardinal:</label>
-                        </td>
-                        <td>
-                            <input id="cardinalCheckbox" type="checkbox" />
-                        </td>
-                        <td>
-                            <label>Basis:</label>
-                        </td>
-                        <td>
-                            <input id="basisCheckbox" type="checkbox" />
-                        </td>
-                    </tr>
-                </table>
+            <div class="container">
+            <div class="row" id="section3">
+
+                <div class="col-sm-2"></div>
+                <div class="col-sm-4">
+                    <h1>Graph Visibility</h1>
+                    <table>
+                        <tr>
+                            <td>
+                                <label>Linear:</label>
+                            </td>
+                            <td>
+                                <input id="linearCheckbox" type="checkbox" />
+                            </td>
+                            <td>
+                                <label>Cardinal:</label>
+                            </td>
+                            <td>
+                                <input id="cardinalCheckbox" type="checkbox" />
+                            </td>
+                            <td>
+                                <label>Basis:</label>
+                            </td>
+                            <td>
+                                <input id="basisCheckbox" type="checkbox" />
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="col-sm-4">
+                    <h1>Graph Primacy</h1>
+                    <table>
+                        <tr>
+                            <td>
+                                <label>Linear:</label>
+                            </td>
+                            <td>
+                                <input id="linearRadio" type="radio" name="primacy" checked />
+                            </td>
+                            <td>
+                                <label>Cardinal:</label>
+                            </td>
+                            <td>
+                                <input id="cardinalRadio" type="radio" name="primacy" />
+                            </td>
+                            <td>
+                                <label>Basis:</label>
+                            </td>
+                            <td>
+                                <input id="basisRadio" type="radio" name="primacy" />
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="col-sm-2">
+                    <h2 id="explain3"></h2>
+                    <h3 id="directions3" class="explain_2"></h3>
+                </div>
             </div>
-            <div class="col-sm-4">
-                <h1>Graph Primacy</h1>
-                <table>
-                    <tr>
-                        <td>
-                            <label>Linear:</label>
-                        </td>
-                        <td>
-                            <input id="linearRadio" type="radio" name="primacy" checked />
-                        </td>
-                        <td>
-                            <label>Cardinal:</label>
-                        </td>
-                        <td>
-                            <input id="cardinalRadio" type="radio" name="primacy" />
-                        </td>
-                        <td>
-                            <label>Basis:</label>
-                        </td>
-                        <td>
-                            <input id="basisRadio" type="radio" name="primacy" />
-                        </td>
-                    </tr>
-                </table>
+            <div id="chartArea"></div>
+            <div class="row">
+                <div class="col-sm-3">
+                    <h1>Linear</h1>
+                    <p id="linearReportPoint">N/A</p>
+                    <p id="linearReportSlope">N/A</p>
+                    <p>Yellow = Slope Magnitude of 0.1</p>
+                    <svg width="210" height="200" id="linearSlopeVisual">
+                        <circle cx="10" cy="100" r="5" fill="orange"></circle>
+                    </svg>
+                </div>
+                <div class="col-sm-3">
+                    <h1>Cardinal</h1>
+                    <p id="cardinalReportPoint">N/A</p>
+                    <p id="cardinalReportSlope">N/A</p>
+                    <p>Yellow = Slope Magnitude of 0.1</p>
+                    <svg width="210" height="200" id="cardinalSlopeVisual">
+                        <circle cx="10" cy="100" r="5" fill="orange"></circle>
+                    </svg>
+                </div>
+                <div class="col-sm-3">
+                    <h1>Basis</h1>
+                    <p id="basisReportPoint">N/A</p>
+                    <p id="basisReportSlope">N/A</p>
+                    <p>Yellow = Slope Magnitude of 0.1</p>
+                    <svg width="210" height="200" id="basisSlopeVisual">
+                        <circle cx="10" cy="100" r="5" fill="orange"></circle>
+                    </svg>
+                </div>
+                <div class="col-sm-3">
+                    <h1>WSE</h1>
+                    <p id="wseReportPoint">N/A</p>
+                    <p id="wseReportSlope">N/A</p>
+                    <p>Yellow = Slope Magnitude of 0.1</p>
+                    <svg width="210" height="200" id="wseSlopeVisual">
+                        <circle cx="10" cy="100" r="5" fill="orange"></circle>
+                    </svg>
+                </div>
             </div>
-            <div class="col-sm-2">
-                <h2 id="explain3"></h2>
-                <h3 id="directions3" class="explain_2"></h3>
-            </div>
-        </div>
-        <div id="chartArea"></div>
-        <div class="row">
-            <div class="col-sm-3">
-                <h1>Linear</h1>
-                <p id="linearReportPoint">N/A</p>
-                <p id="linearReportSlope">N/A</p>
-                <p>Yellow = Slope Magnitude of 0.1</p>
-                <svg width="210" height="200" id="linearSlopeVisual">
-                    <circle cx="10" cy="100" r="5" fill="orange"></circle>
-                </svg>
-            </div>
-            <div class="col-sm-3">
-                <h1>Cardinal</h1>
-                <p id="cardinalReportPoint">N/A</p>
-                <p id="cardinalReportSlope">N/A</p>
-                <p>Yellow = Slope Magnitude of 0.1</p>
-                <svg width="210" height="200" id="cardinalSlopeVisual">
-                    <circle cx="10" cy="100" r="5" fill="orange"></circle>
-                </svg>
-            </div>
-            <div class="col-sm-3">
-                <h1>Basis</h1>
-                <p id="basisReportPoint">N/A</p>
-                <p id="basisReportSlope">N/A</p>
-                <p>Yellow = Slope Magnitude of 0.1</p>
-                <svg width="210" height="200" id="basisSlopeVisual">
-                    <circle cx="10" cy="100" r="5" fill="orange"></circle>
-                </svg>
-            </div>
-            <div class="col-sm-3">
-                <h1>WSE</h1>
-                <p id="wseReportPoint">N/A</p>
-                <p id="wseReportSlope">N/A</p>
-                <p>Yellow = Slope Magnitude of 0.1</p>
-                <svg width="210" height="200" id="wseSlopeVisual">
-                    <circle cx="10" cy="100" r="5" fill="orange"></circle>
-                </svg>
-            </div>
-        </div>
-        <!--</div>-->
+            <!--</div>-->
         <!--</section>   End sectionHolder -->
 
 
@@ -301,6 +308,11 @@
 
         <!-- <script src = "script.js"></script> -->
     </div>
+
+
+ </section>  <!-- End sectionHolder -->
+
+
     <br />
     <div class="container">
         <footer>
