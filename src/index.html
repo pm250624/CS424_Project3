@@ -1,0 +1,324 @@
+﻿
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+    html {
+        font-size: 15px;
+        font-family: 'Open Sans', sans-serif;
+    }
+
+    h1 {
+        font-size: 30px;
+        margin: 5px;
+        color: black;
+        font-weight: bold;
+    }
+
+    h2 {
+        font-size: 20px;
+        margin: 0;
+        padding: 0 20px;
+        color: black;
+        text-align: center;
+    }
+
+    h3 {
+        font-size: 13px;
+        margin: 0;
+        padding: 0 3px;
+        color: #615E5E;
+        text-align: left;
+    }
+
+
+    section {
+        border: 1px solid #7C7878;
+        padding: 2px;
+        overflow: hidden;
+    }
+        section > section {
+            float: left;
+        }
+
+    .sectionHolder {
+        padding-left: 2px;
+    }
+
+    .background {
+        fill: none;
+        pointer-events: all;
+    }
+
+
+    .explain_1 {
+        max-width: 240px;
+        max-height: 400px;
+        word-wrap: break-word;
+        overflow-y: scroll;
+    }
+
+    .explain_2 {
+        max-width: 475px;
+        word-wrap: break-word;
+    }
+
+    .explain_3 {
+        max-width: 575px;
+        word-wrap: break-word;
+    }
+
+    .line {
+        fill: none;
+        stroke: url(#temperature-gradient);
+        stroke-width: 3px;
+    }
+
+    .area {
+        fill: lightsteelblue;
+    }
+
+    .lineBold {
+        fill: none;
+        stroke: black;
+        stroke-width: 7px;
+    }
+
+
+    .lineDashedBold {
+        fill: none;
+        stroke: url(#temperature-gradient);
+        stroke-dasharray: 10, 5;
+        stroke-width: 7px;
+    }
+
+    .feature {
+        fill: #ccc;
+        cursor: pointer;
+    }
+
+        .feature.active {
+            fill: red;
+        }
+
+    .mesh {
+        fill: none;
+        stroke: #fff;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    .button {
+        background: #A47D7D;
+        border-radius: 10px;
+        font-family: Arial;
+        color: #ffffff;
+        font-size: 14px;
+        padding: 5px 20px 5px 20px;
+        text-decoration: none;
+        margin-top: 8px;
+        cursor: pointer;
+    }
+</style>
+
+<html>
+<head>
+    <title>CS 424 Project 3</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+    <script src="https://d3js.org/d3-queue.v4.min.js"></script>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" charset="utf-8"></script>
+    <script src="lib/topojson.js"></script>
+</head>
+<body>
+
+        <h1>The River Flows; It Flows to the Sea</h1>
+        <section class="sectionHolder">
+            <!-- Section 1 -->
+            <section >
+            <!--<div class="row">-->
+            <!--<div class="col-sm-12">-->
+                <div id="select">
+                    <select id="dataList" class="button"></select>
+                    <select id="dataList2" class="button"></select>
+                    <button id="button101" class="button" type="button">Analyze River</button>
+                    <button id="button102" class="button" type="button">Go Left</button>
+                    <button id="button103" class="button" type="button">Go Right</button>
+                </div>
+            <!--</div>-->
+        <!--</div>-->
+            <!--<div class="row">-->
+                <!-- <div class="col-sm-9">-->
+                <!-- SVG canavs will be placed here (using the D3 code in mapcode.js) -->
+                <div id="section2" style="position:relative;top:5px;background:#cccccc;background-image: linear-gradient(to bottom, #999999, #cccccc);border-width:5px;border-style: solid;border-color: #A47D7D;">
+                    <h2 id="explain2"></h2>
+                    <h3 id="directions2" class="explain_3"></h3>
+                </div>
+
+                </section>
+
+            <!-- </div>-->
+
+            <!--</div>-->
+
+            <section>
+                <div id="section4" style="position:relative;top:5px;background:#fff">
+                    <h2 id="explain4"></h2>
+                    <h4 id="directions4"></h4>
+                    <ul id="explain5" class="explain_1"></ul>
+                </div>
+            </section>
+
+
+            <div class="col-sm-3">
+            </div>
+
+            <div class="container">
+            <div class="row" id="section3">
+
+                <div class="col-sm-2"></div>
+                <div class="col-sm-4">
+                    <h1>Graph Visibility</h1>
+                    <table>
+                        <tr>
+                            <td>
+                                <label>Linear:</label>
+                            </td>
+                            <td>
+                                <input id="linearCheckbox" type="checkbox" />
+                            </td>
+                            <td>
+                                <label>Cardinal:</label>
+                            </td>
+                            <td>
+                                <input id="cardinalCheckbox" type="checkbox" />
+                            </td>
+                            <td>
+                                <label>Basis:</label>
+                            </td>
+                            <td>
+                                <input id="basisCheckbox" type="checkbox" />
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="col-sm-4">
+                    <h1>Graph Primacy</h1>
+                    <table>
+                        <tr>
+                            <td>
+                                <label>Linear:</label>
+                            </td>
+                            <td>
+                                <input id="linearRadio" type="radio" name="primacy" checked />
+                            </td>
+                            <td>
+                                <label>Cardinal:</label>
+                            </td>
+                            <td>
+                                <input id="cardinalRadio" type="radio" name="primacy" />
+                            </td>
+                            <td>
+                                <label>Basis:</label>
+                            </td>
+                            <td>
+                                <input id="basisRadio" type="radio" name="primacy" />
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="col-sm-2">
+                    <h2 id="explain3"></h2>
+                    <h3 id="directions3" class="explain_2"></h3>
+                </div>
+            </div>
+            <div id="chartArea"></div>
+            <div class="row">
+                <div class="col-sm-3">
+                    <h1>Linear</h1>
+                    <p id="linearReportPoint">N/A</p>
+                    <p id="linearReportSlope">N/A</p>
+                    <p>Yellow = Slope Magnitude of 0.1</p>
+                    <svg width="210" height="200" id="linearSlopeVisual">
+                        <circle cx="10" cy="100" r="5" fill="orange"></circle>
+                    </svg>
+                </div>
+                <div class="col-sm-3">
+                    <h1>Cardinal</h1>
+                    <p id="cardinalReportPoint">N/A</p>
+                    <p id="cardinalReportSlope">N/A</p>
+                    <p>Yellow = Slope Magnitude of 0.1</p>
+                    <svg width="210" height="200" id="cardinalSlopeVisual">
+                        <circle cx="10" cy="100" r="5" fill="orange"></circle>
+                    </svg>
+                </div>
+                <div class="col-sm-3">
+                    <h1>Basis</h1>
+                    <p id="basisReportPoint">N/A</p>
+                    <p id="basisReportSlope">N/A</p>
+                    <p>Yellow = Slope Magnitude of 0.1</p>
+                    <svg width="210" height="200" id="basisSlopeVisual">
+                        <circle cx="10" cy="100" r="5" fill="orange"></circle>
+                    </svg>
+                </div>
+                <div class="col-sm-3">
+                    <h1>WSE</h1>
+                    <p id="wseReportPoint">N/A</p>
+                    <p id="wseReportSlope">N/A</p>
+                    <p>Yellow = Slope Magnitude of 0.1</p>
+                    <svg width="210" height="200" id="wseSlopeVisual">
+                        <circle cx="10" cy="100" r="5" fill="orange"></circle>
+                    </svg>
+                </div>
+            </div>
+            <!--</div>-->
+        <!--</section>   End sectionHolder -->
+
+
+        <script>
+            var boundLines = [{ x: 210, y: 0 }, { x: 10, y: 100 }, { x: 210, y: 200 }];
+            var centerLine = [{ x: 210, y: 100 }, { x: 10, y: 100 }];
+            var boundLineFunction = d3.line().x(function (d) { return d.x; }).y(function (d) { return d.y; });
+            d3.select("#linearSlopeVisual").append("path")
+                .style("fill", "none").style("stroke", "yellow").style("stroke-width", "4px")
+                .attr("d", boundLineFunction(boundLines));
+            d3.select("#cardinalSlopeVisual").append("path")
+                .style("fill", "none").style("stroke", "yellow").style("stroke-width", "4px")
+                .attr("d", boundLineFunction(boundLines));
+            d3.select("#basisSlopeVisual").append("path")
+                .style("fill", "none").style("stroke", "yellow").style("stroke-width", "4px")
+                .attr("d", boundLineFunction(boundLines));
+            d3.select("#wseSlopeVisual").append("path")
+                .style("fill", "none").style("stroke", "yellow").style("stroke-width", "4px")
+                .attr("d", boundLineFunction(boundLines));
+            d3.select("#linearSlopeVisual").append("path")
+                .style("fill", "none").style("stroke", "darkgrey").style("stroke-width", "4px")
+                .attr("d", boundLineFunction(centerLine));
+            d3.select("#cardinalSlopeVisual").append("path")
+                .style("fill", "none").style("stroke", "darkgrey").style("stroke-width", "4px")
+                .attr("d", boundLineFunction(centerLine));
+            d3.select("#basisSlopeVisual").append("path")
+                .style("fill", "none").style("stroke", "darkgrey").style("stroke-width", "4px")
+                .attr("d", boundLineFunction(centerLine));
+            d3.select("#wseSlopeVisual").append("path")
+                .style("fill", "none").style("stroke", "darkgrey").style("stroke-width", "4px")
+                .attr("d", boundLineFunction(centerLine));
+        </script>
+        <script type="text/javascript" src="./script.js"></script>
+
+
+        <!-- <script src = "script.js"></script> -->
+    </div>
+
+
+ </section>  <!-- End sectionHolder -->
+
+
+    <br />
+    <div class="container">
+        <footer>
+            <p>By: Patrick Moriarty, Louis Ludkowski, and Patrick Tam</p>
+        </footer>
+    </div>
+</body>
+</html>
